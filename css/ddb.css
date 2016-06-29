@@ -1,0 +1,117 @@
+body { font: 14px Arial; color: #000; background: #fff; }
+#modal { 
+	width: 60%; 
+	position: fixed; 
+	left:50%; 
+	top:3%;
+	bottom:3%;
+	margin-left: -30%; 
+	z-index: 100; 
+	display: none; 
+}
+h1, h2, h3 { }
+
+#modalbg { background: rgba(0,0,0,0.6); position: fixed; left:0; right:0; top:0; bottom:0; z-index: 99; display: none; }
+#modal-content { overflow-y: scroll; height: 100%; padding: 15px; }
+#modal .panel-body { position: absolute; left:0; right:0; bottom:0; top:23px; }
+.modal-bar { position: absolute; left: 100px; bottom: 0; right: 100px; padding:15px; background: #eee; border-radius: 10px 10px 0 0; }
+
+.new-form { padding:5px; margin: 0 5px 5px 0; border: 1px solid #ccc; }
+.new-form h2 { }
+.new-form input { font-size: 14px; padding: 3px; margin-bottom:2px; max-width: 100%; }
+.new-form input[type=text] { }
+.new-form select { font-size: 14px; padding: 3px; max-width: 100%; margin-bottom: 2px; }
+
+#form_edit { padding: 0px 0px 60px 0px; }
+#form_edit input[type=text] { }
+#form_edit select { }
+#form_edit h1 { margin-top: 0; }
+
+.button-edit { cursor: pointer; }
+
+.optpreview { 
+	height: 48px; 
+	background-position: 0, 0; 
+	background-size: 48px 48px; 
+	background-repeat: no-repeat;
+	padding-left: 52px;
+}
+
+.main-data {
+	border-collapse: separate;
+	border-spacing: 0;
+	width: 100%;
+}
+.main-data td { height:50px; padding:5px; }
+.main-data tr:hover { background: #BFE8CE !important; }
+.main-data pre { margin:0; padding:3px; }
+.main-header { font-weight: 700; }
+.main-data tbody tr td { vertical-align: middle; }
+
+.table-info { width: 50%; }
+.table-info tr td:first-child { font-weight: 700; }
+.table-info td { padding: 4px; }
+.table-info-header { font-size: 20px; }
+
+.table-data { width: 50%; }
+.table-data td { padding: 4px; }
+
+.item-icon-float { width:32px; height:32px; float:left; margin-right: 5px; margin-top:3px; }
+.item-icon { width:32px; height:32px; }
+.item-name { font-weight: 700; font-size:120%; overflow: hidden; }
+.item-type { color: #888; }
+.item-date { font: 13px Consolas, monospace;  }
+.item-extra { padding:2px; font-size: 16px; margin-top: 3px; }
+.item-extra .pic { margin-right: 3px; }
+
+.item-full { margin-bottom: 50px; padding: 20px; }
+.item-full .item-icon { width:128px; height: 128px; float: none; margin: 0; }
+.item-full .page-header, .item-full .page-header h1 { margin-top: 0; }
+
+.mono-field { font-family: "Consolas", monospace; padding:2px; }
+
+.header { background: #363251; margin-bottom: 5px; }
+.header h1 { font-size: 20px; margin:0; padding:10px; }
+.header h1 a { color: #fff; }
+.header span { color: #fff; vertical-align: -2px; margin-right: 8px; }
+.content { width: 88%; }
+.sidebar { 
+	width: 12%; 
+	position: fixed; 
+	top: 0; 
+	right: 0; 
+	bottom: 0; 
+	background: #484369;
+	/* transition: 0.1s ease-in-out all; */ 
+	padding: 5px 5px 5px 5px;
+	overflow-y: scroll;
+
+}
+/* .sidebar:hover { width:20%; } */
+.sidebar h2 { margin-top: 0; font-weight: 700; font-size: 16px; }
+.sidebar h1, .sidebar h2, .sidebar h3, .sidebar h4 { margin-top: 0; }
+.sidebar .panel { margin-bottom: 5px; }
+
+.mono { font-family: monospace; }
+
+a { text-decoration: none; }
+
+.itemtags a { color:#000; text-decoration: none; display: inline-block; background-color: #afa; padding: 10px 4px; margin: 5px 1px 0 0; border: 1px solid #888; }
+.itemtags a:hover { border-color: #000; }
+.itemtags a.a { background-color: #70bd70; }
+.itemtags a.n { background-color: #f88; }
+.itemtags a.s { background-color: #aaf; }
+.itemtags a.r { background-color: #f00; }
+.itemtags a.b { background-color: #f5ff99; }
+.itemtags a.o { background-color: #B24FC7; }
+.itemtags a.d { background-color: #3ABBC4; }
+.itemtags a.t { background-color: #BDBB41; }
+
+.sidebar .itemtags a { padding: 2px 4px; }
+
+.unavailable { color: #888; }
+
+.pic { vertical-align: -3px; width: 16px; height: 16px; cursor: pointer; }
+.pic-big { width: 128px; height: 128px; cursor: pointer; }
+
+#status-bar { background-color: #2C4563; color: #fff; font-size: 12px; padding: 5px; position: fixed; left: 0; bottom: 0; right: 0; }
