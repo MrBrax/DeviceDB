@@ -47,6 +47,7 @@ h1, h2, h3 { }
 .main-data pre { margin:0; padding:3px; }
 .main-header { font-weight: 700; }
 .main-data tbody tr td { vertical-align: middle; }
+/* .main-data .fa { width: 15px; height: 15px; font-size: 15px; } */
 
 .table-info { width: 50%; }
 .table-info tr td:first-child { font-weight: 700; }
@@ -98,14 +99,14 @@ a { text-decoration: none; }
 
 .itemtags a { color:#000; text-decoration: none; display: inline-block; background-color: #afa; padding: 10px 4px; margin: 5px 1px 0 0; border: 1px solid #888; }
 .itemtags a:hover { border-color: #000; }
-.itemtags a.a { background-color: #70bd70; }
-.itemtags a.n { background-color: #f88; }
-.itemtags a.s { background-color: #aaf; }
-.itemtags a.r { background-color: #f00; }
-.itemtags a.b { background-color: #f5ff99; }
-.itemtags a.o { background-color: #B24FC7; }
-.itemtags a.d { background-color: #3ABBC4; }
-.itemtags a.t { background-color: #BDBB41; }
+.itemtags a.flag-a { background-color: #70bd70; }
+.itemtags a.flag-n { background-color: #f88; }
+.itemtags a.flag-s { background-color: #aaf; }
+.itemtags a.flag-r { background-color: #f00; }
+.itemtags a.flag-b { background-color: #f5ff99; }
+.itemtags a.flag-o { background-color: #B24FC7; }
+.itemtags a.flag-d { background-color: #3ABBC4; }
+.itemtags a.flag-t { background-color: #BDBB41; }
 
 .sidebar .itemtags a { padding: 2px 4px; }
 
@@ -115,3 +116,15 @@ a { text-decoration: none; }
 .pic-big { width: 128px; height: 128px; cursor: pointer; }
 
 #status-bar { background-color: #2C4563; color: #fff; font-size: 12px; padding: 5px; position: fixed; left: 0; bottom: 0; right: 0; }
+
+.main-data tr.resigned { color: #bbb; }
+.main-data tr.resigned .unavailable, .main-data tr.resigned .item-type { color: #bbb; }
+.main-data tr.resigned a { color: #ddd; }
+.main-data tr.resigned img { opacity: .6; }
+.main-data tr.resigned .itemtags { opacity: .6; }
+
+.main-data tr.missing { color: #A14747; background-color: #F4CBCB !important; }
+.main-data tr.missing .unavailable, .main-data tr.missing .item-type { color: #A14747; }
+.main-data tr.missing a { color: #803636; }
+.main-data tr.missing img { opacity: .6; }
+.main-data tr.missing .itemtags { opacity: .6; }

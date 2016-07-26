@@ -3,6 +3,8 @@
 // Report all errors except E_NOTICE
 error_reporting(E_ALL & ~E_NOTICE);
 
+include "defines.php";
+
 include "braxus.php";
 $BraXuS = new BraXuS();
 
@@ -22,6 +24,9 @@ if($_GET['edit']){
 	echo '<form class="form-horizontal" id="form_edit" onsubmit="editform(this); return false;" method="post" action="data.php?savedevice=' . $id . '">';
 
 	echo '<h1>' . htmlentities($main["name"]) . '</h1>';
+
+	// General info
+	echo '<div class="form-group"><label class="col-sm-2 control-label"><h3>General info</h3></label></div>';
 
 	echo "<input name='id' value='" . $id . "' type='hidden'>";
 
@@ -44,16 +49,8 @@ if($_GET['edit']){
 
 	echo '<div class="form-group"><label class="col-sm-2 control-label">PSU S/N</label><div class="col-sm-10"><input class="form-control mono" name="psu_serial" value="' . $main["psu_serial"] . '" placeholder="psu serial" type="text"></div></div>';
 
-	// owner
-	echo '<div class="form-group"><label class="col-sm-2 control-label">Owner</label><div class="col-sm-10"><select class="form-control" name="owner">';
-	$owner_data = $BraXuS->PDOFetchAll("SELECT * FROM owners");
-	echo "<option " . ( !$main["owner"] ? "selected " : "" ) . "value='0'>None</option>";
-	foreach ($owner_data as $o) {
-		echo "<option " . ( $o["id"] == $main["owner"] ? "selected " : "" ) . "value='" . $o["id"] . "'>";
-		echo ( $o["username"] ? $o["username"] : $o["firstname"] . " " . $o["lastname"] );
-		echo "</option>";
-	}
-	echo "</select></div></div>";
+
+
 
 	// model
 	echo '<div class="form-group"><label class="col-sm-2 control-label">Model</label><div class="col-sm-10"><select class="form-control" name="model">';
@@ -65,6 +62,7 @@ if($_GET['edit']){
 		echo "</option>";
 	}
 	echo "</select></div></div>";
+
 
 	// os
 	echo '<div class="form-group"><label class="col-sm-2 control-label">OS</label><div class="col-sm-10"><select class="form-control" name="os">';
@@ -82,10 +80,6 @@ if($_GET['edit']){
 	
 	echo "<option " . ( !$main["location"] ? "selected " : "" ) . "value='0'>None</option>";
 	
-	//$location_root = $BraXuS->PDOFetchAll("SELECT * FROM locations WHERE parent IS NULL ORDER BY name");
-
-	//$tree = [];
-	//$parent = 0;
 
 	$depth = 0;
 
@@ -166,28 +160,87 @@ if($_GET['edit']){
 		echo '</div>';
 	echo '</div>';
 
+	/*
+	// Additional data
+	echo '<div class="form-group"><label class="col-sm-2 control-label"><h3>Additional data</h3></label></div>';
+
+	echo '<div class="form-group">';
+	echo '<label class="col-sm-2 control-label"></label>';
+		echo '<div class="col-sm-10">';
+
+		$additional_data = $BraXuS->PDOFetchAll("SELECT * FROM device_additional WHERE device_id = :id", ["id" => $main["id"] ] );
+
+		foreach ($additional_data as $i => $a) {
+			echo '<select name="additional[' . $i . '][key]">';
+			foreach ($device_info_sql as $o) {
+
+			}
+			echo '</select>';
+		}
+
+		echo '</div>';
+	echo '</div>';
+	*/
+
+	// Owners
+	echo '<div class="form-group"><label class="col-sm-2 control-label"><h3>Owners</h3></label></div>';
+	$ownerfull_data = $BraXuS->PDOFetchAll("SELECT * FROM owners_date WHERE device_id = :id", ["id" => $main["id"] ] );
+	$owner_data = $BraXuS->PDOFetchAll("SELECT * FROM owners ORDER BY firstname, lastname");
+
+	echo '<div class="form-group">';
+		echo '<label class="col-sm-2 control-label"></label>';
+		echo '<div class="col-sm-10">';
+
+			echo '<span class="unavailable">Both date fields blank = remove</span>';
+	
+			echo '<div id="owners_data">';
+				foreach ($ownerfull_data as $o) {
+
+					echo '<select name="owner[' . $o["id"] . '][owner_id]">';
+
+						foreach ($owner_data as $u) {
+							echo "<option " . ( $o["owner_id"] == $u["id"] ? "selected " : "" ) . "value='" . $u["id"] . "'>";
+							echo $u["firstname"] . " " . $u["lastname"] . ( $u["username"] ? " (" . $u["username"] . ")" : "" );
+							echo "</option>";
+						}
+
+					echo '</select> ';
+
+					echo '<input type="text" name="owner[' . $o["id"] . '][date_aquired]" value="' . ( substr($o["date_aquired"], 0, 4) == "0000" ? "" : $o["date_aquired"] ) . '"> -> ';
+					echo '<input type="text" name="owner[' . $o["id"] . '][date_leave]" value="' . ( substr($o["date_leave"], 0, 4) == "0000" ? "" : $o["date_leave"] ) . '">';
+
+					echo '<input type="text" name="owner[' . $o["id"] . '][damage]" value="' . $o["damage"] . '" placeholder="Damages">';
+					echo '<input type="text" name="owner[' . $o["id"] . '][notes]" value="' . $o["notes"] . '" placeholder="Notes">';
+
+					echo '<br>';
+
+				}
+			echo '</div>';
+
+			echo '<button onclick="addowner();" type="button">+</button>';
+
+		echo "</div>";
+
+	echo "</div>";
 
 
-	echo '<div class="form-group"><label class="col-sm-2 control-label">In storage</label><div class="col-sm-10"><input type="checkbox" name="storage" value="1" ' . ( $main["storage"] == 1 ? "checked " : "" ) . '></div></div>';
+	// Flags
+	echo '<div class="form-group"><label class="col-sm-2 control-label"><h3>Flags</h3></label></div>';
 
-	//echo '<div class="form-group"><label class="col-sm-2 control-label">Needs repair</label><div class="col-sm-10"><input type="checkbox" name="needs_repair" value="1" ' . ( $main["needs_repair"] == 1 ? "checked " : "" ) . '></div></div>';
+	$main["flags"] = [];
+	$flags_data = $BraXuS->PDOFetchAll("SELECT * FROM device_flags WHERE device_id = :id", ["id" => $main["id"] ] );
+	foreach($flags_data as $k => $v){
+		$fd = $device_flags_sql[ $v["flag_id"] ];
+		$main["flags"][ $v["flag_id"] ] = $v["flag_value"];
+	}
 
-	//echo '<div class="form-group"><label class="col-sm-2 control-label">Being repaired</label><div class="col-sm-10"><input type="checkbox" name="repairing" value="1" ' . ( $main["repairing"] == 1 ? "checked " : "" ) . '></div></div>';
+	foreach( $device_flags_sql as $flag_id => $flag_data ){
+		echo '<div class="form-group"><label class="col-sm-2 control-label">' . $flag_data["name"] . '</label><div class="col-sm-10"><input type="checkbox" name="flags[' . $flag_id . ']" value="1" ' . ( $main["flags"][$flag_id] == 1 ? "checked " : "" ) . '></div></div>';
+	}
 
-	echo '<div class="form-group"><label class="col-sm-2 control-label">BYOD</label><div class="col-sm-10"><input type="checkbox" name="byod" value="1" ' . ( $main["byod"] == 1 ? "checked " : "" ) . '></div></div>';
-
-	echo '<div class="form-group"><label class="col-sm-2 control-label">Outside</label><div class="col-sm-10"><input type="checkbox" name="outside" value="1" ' . ( $main["outside"] == 1 ? "checked " : "" ) . '></div></div>';
-
-	echo '<div class="form-group"><label class="col-sm-2 control-label">Public</label><div class="col-sm-10"><input type="checkbox" name="public" value="1" ' . ( $main["public"] == 1 ? "checked " : "" ) . '></div></div>';
-
-	echo '<div class="form-group"><label class="col-sm-2 control-label">Travel</label><div class="col-sm-10"><input type="checkbox" name="travel" value="1" ' . ( $main["travel"] == 1 ? "checked " : "" ) . '></div></div>';
-
-	echo '<div class="form-group"><label class="col-sm-2 control-label">Active Directory</label><div class="col-sm-10"><input type="checkbox" name="acd" value="1" ' . ( $main["acd"] == 1 ? "checked " : "" ) . '></div></div>';
-
-	echo '<div class="form-group"><label class="col-sm-2 control-label">Dyslexia</label><div class="col-sm-10"><input type="checkbox" name="dyslexia" value="1" ' . ( $main["dyslexia"] == 1 ? "checked " : "" ) . '></div></div>';
-
-	// extra data
-	echo '<div class="form-group"><label class="col-sm-2 control-label">Extra</label><div class="col-sm-10">';
+	// Extra data
+	echo '<div class="form-group"><label class="col-sm-2 control-label"><h3>Extra</h3></label></div>';
+	echo '<div class="form-group"><label class="col-sm-2 control-label"></label><div class="col-sm-10">';
 	echo "<div id='extra_container'>";
 	$extra_data = $BraXuS->PDOFetchAll("SELECT * FROM device_extra WHERE device_id = :id", ["id" => $id]);
 	foreach ($extra_data as $n => $m) {
@@ -208,7 +261,39 @@ if($_GET['edit']){
 
 	?>
 	<script type="text/javascript">
+		
+		var owner_amount = 1;
+
+		function addowner(){
+
+			var html = '<select name="ownernew[' + owner_amount + '][owner_id]">';
+			<?php
+			foreach ($owner_data as $u) {
+				echo "\n\t\t\thtml += \"";
+				echo "<option " . ( $main["owner"] == $u["id"] ? "selected " : "" ) . "value='" . $u["id"] . "'>";
+				echo $u["firstname"] . " " . $u["lastname"] . ( $u["username"] ? " (" . $u["username"] . ")" : "" );
+				echo "</option>";
+				echo '";';
+			}
+			?>
+
+			html += '</select> ';
+
+			html += '<input type="text" name="ownernew[' + owner_amount + '][date_aquired]" value="<?=( $main["date_issued"] ?: date("Y-m-d H:i:s") )?>"> -> ';
+			html += '<input type="text" name="ownernew[' + owner_amount + '][date_leave]" value="<?=date("Y-m-d H:i:s")?>">';
+
+			html += '<input type="text" name="ownernew[' + owner_amount + '][damage]" placeholder="Damage">';
+			html += '<input type="text" name="ownernew[' + owner_amount + '][notes]" placeholder="Notes">';
+
+			html += '<br>';
+
+			owner_amount++;
+
+			$("#owners_data").append(html);
+		}
+
 		$(dthook);
+
 	/*
 		$(function() {
 			$('input[type=date]').each(function(){ 
@@ -256,7 +341,7 @@ if($_GET['savedevice']){
 			"serial" => $_POST['serial'],
 			"psu" => $_POST['psu'],
 			"psu_serial" => $_POST['psu_serial'],
-			"owner" => $_POST['owner'],
+			// "owner" => "",
 			"os" => $_POST['os'],
 			"model" => $_POST['model'],
 			"mac" => $_POST['mac'],
@@ -271,6 +356,7 @@ if($_GET['savedevice']){
 			"public" => $_POST['public'] == "1",
 			"travel" => $_POST['travel'] == "1",
 			"dyslexia" => $_POST['dyslexia'] == "1",
+			"resigned" => $_POST['resigned'] == "1",
 
 			"date_aquired" => 	$date_aquired,
 			"date_installed" => $date_installed,
@@ -282,11 +368,66 @@ if($_GET['savedevice']){
 		["id" => $id]
 	);
 
+	// save extra
 	$BraXuS->PDODelete("device_id = :id", "device_extra", ["id" => $id]);
-
 	foreach($_POST['extra'] as $d){
 		if($d == "") continue;
 		$BraXuS->PDOInsert(["device_id" => $id, "data" => $d], "device_extra");
+	}
+
+	// save flags
+	$BraXuS->PDODelete("device_id = :id", "device_flags", ["id" => $id]);
+	if($_POST['flags']){
+		foreach($_POST['flags'] as $d => $v){
+			$BraXuS->PDOInsert(["device_id" => $id, "flag_id" => $d, "flag_value" => $v], "device_flags");
+		}
+	}
+
+	if($_POST['owner']){
+		foreach($_POST['owner'] as $oid => $o){
+
+			if(strlen($o["date_aquired"]) == 4) $o["date_aquired"] .= "-01-01";
+			if(strlen($o["date_aquired"]) == 7) $o["date_aquired"] .= "-01";
+			if(strlen($o["date_leave"]) == 4) $o["date_leave"] .= "-01-01";
+			if(strlen($o["date_leave"]) == 7) $o["date_leave"] .= "-01";
+
+			if( $o["date_aquired"] == "" && $o["date_leave"] == "" ){
+				$BraXuS->PDODelete("id = :id", "owners_date", [ "id" => $oid ] );
+			}else{
+				$BraXuS->PDOReplace([
+					"id" => $oid,
+					"owner_id" => $o["owner_id"],
+					"device_id" => $id,
+					"date_aquired" => $o["date_aquired"],
+					"date_leave" => $o["date_leave"],
+					"damage" => $o["damage"],
+					"notes" => $o["notes"]
+				], "owners_date");
+			}
+		}
+	}
+
+	if($_POST['ownernew']){
+		foreach($_POST['ownernew'] as $oid => $o){
+
+			if(strlen($o["date_aquired"]) == 4) $o["date_aquired"] .= "-01-01";
+			if(strlen($o["date_aquired"]) == 7) $o["date_aquired"] .= "-01";
+			if(strlen($o["date_leave"]) == 4) $o["date_leave"] .= "-01-01";
+			if(strlen($o["date_leave"]) == 7) $o["date_leave"] .= "-01";
+
+			if( $o["date_aquired"] == "" && $o["date_leave"] == "" ){
+				
+			}else{
+				$BraXuS->PDOInsert([
+					"owner_id" => $o["owner_id"],
+					"device_id" => $id,
+					"date_aquired" => $o["date_aquired"],
+					"date_leave" => $o["date_leave"],
+					"damage" => $o["damage"],
+					"notes" => $o["notes"]
+				], "owners_date");
+			}
+		}
 	}
 
 	echo "ok";
@@ -360,14 +501,18 @@ if($_GET['new']){
 			[
 				"name" => $_POST['name'],
 				"serial" => $_POST['serial'],
-				"owner" => $_POST['owner'],
+				//"owner" => $_POST['owner'],
 				"model" => $_POST['model'],
 				"location" => $_POST['location']
 			],
 			"devices"
 		) or die("insert error");
 
-		//echo "ok";
+		// add owner
+		if($_POST['owner']){
+			$BraXuS->PDOInsert( ["device_id" => $newid, "owner_id" => $_POST['owner'], "date_aquired" => date("Y-m-d H:i:s") ], "owners_date");
+		}
+
 		header("Location: " . $_SERVER['HTTP_REFERER'] . "#item_" . $newid );
 		exit;
 

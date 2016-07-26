@@ -103,6 +103,41 @@ class BraXuS {
 		return $dbh->errorCode() == "00000";
 		
 	}
+
+	public function PDOReplace($values, $table){
+		/**
+		* Inserts an array with the specified options
+		* @param array with values, table
+		* @returns last insert id
+		*/
+		
+		// set up
+		$exec = array();
+		foreach($values as $k => $v) $exec[':'.$k] = $v;
+		
+		// query
+		$sql = "REPLACE INTO ".$table." (";
+		foreach($values as $k => $v) $sql .= $k.",";
+		$sql = trim($sql,",");
+		$sql .= ") VALUES (";
+		foreach($values as $k => $v) $sql .= ":".$k.",";
+		$sql = trim($sql,",");
+		$sql .= ")";
+		
+		// Execute
+		$dbh = $this->dbh;		
+		$q = $dbh->prepare($sql);
+
+		$q->execute($exec);
+		//return $q->errorCode();
+		//if($dbh->errorInfo()) print_r($dbh->errorCode());
+		if($dbh->lastInsertId()){
+			return $dbh->lastInsertId();
+		}else{
+			return $dbh->errorInfo();
+		}
+		//return $sql;
+	}
 	
 	public function PDODelete($where, $table, $variables=NULL){
 		/**
