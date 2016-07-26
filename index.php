@@ -265,6 +265,8 @@
 			}
 		}
 
+		// THIS IS A MESS, SORRY TO ANYONE WHO READS THIS
+
 		$d["date_aquired"] = preg_replace("/(\:[0-9]+)$/", "", $d["date_aquired"]);
 		$d["date_installed"] = preg_replace("/(\:[0-9]+)$/", "", $d["date_installed"]);
 		$d["date_serviced"] = preg_replace("/(\:[0-9]+)$/", "", $d["date_serviced"]);
@@ -302,11 +304,11 @@
 	if(isset($_GET['export'])){
 
 		include("Classes/PHPExcel.php");
-    	include('Classes/PHPExcel/Writer/Excel5.php');
+		include('Classes/PHPExcel/Writer/Excel5.php');
 
-    	$objPHPExcel = new PHPExcel();
-    	$objPHPExcel->setActiveSheetIndex(0);
-   		$sheet = $objPHPExcel->getActiveSheet();
+		$objPHPExcel = new PHPExcel();
+		$objPHPExcel->setActiveSheetIndex(0);
+		$sheet = $objPHPExcel->getActiveSheet();
 
 		//header("Content-Type: text/csv;charset=UTF-8");
 		header("Content-Description: File Transfer");
@@ -325,24 +327,22 @@
 
 		// styling
 		$sheet->getStyle('A1:F1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-        $sheet->getStyle('A1:F1')->getFill()->getStartColor()->setRGB('ABC9F5');
-        $sheet->getStyle("A1:F1")->getFont()->setBold(true);
-        $sheet->freezePane('A2');
+		$sheet->getStyle('A1:F1')->getFill()->getStartColor()->setRGB('ABC9F5');
+		$sheet->getStyle("A1:F1")->getFont()->setBold(true);
+		$sheet->freezePane('A2');
 
 		$sheet->getStyle('A1:F1')->applyFromArray([
-		    'font'  => [
-		        'bold'  => true,
-		        //'color' => array('rgb' => 'FF0000'),
-		        'size'  => 11,
-		        'name'  => 'Arial'
-	    	]
-	    ]);
+			'font'  => [
+				'bold'  => true,
+				'size'  => 11,
+				'name'  => 'Arial'
+			]
+		]);
 
 		foreach($entries as $d){
 
 			$sheet->getStyle( 'A' . $row . ':F' . $row )->applyFromArray([
 				'font'  => [
-					// 'color' => array('rgb' => '000000'),
 					'size' => 10,
 					'name' => 'Arial'
 				]
@@ -455,22 +455,25 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	    <meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 
 		<title>DDB</title>
-		<script src="/js/jquery.js"></script>
+		<script src="js/jquery.js"></script>
 		<script src="js/jquery.color.js"></script>
+
 		<script src="js/bootstrap.min.js"></script>
+
 		<script src="js/moment.min.js"></script>
 		<script src="js/moment.en-gb.js"></script>
 		<script src="js/daterangepicker.js"></script>
+		
 		<script src="js/ddb.js"></script>
 
 		<link href="css/bootstrap.min.css" rel="stylesheet">
 		<link href="css/daterangepicker.css" rel="stylesheet">	
 		<link href="css/ddb.css" rel="stylesheet">
-		<link href="/css/font-awesome.min.css" rel="stylesheet">
+		<link href="css/font-awesome.min.css" rel="stylesheet">
 
 		<script type="text/javascript">
 			<?php

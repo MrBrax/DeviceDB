@@ -6,5 +6,5 @@ Didn't find a good one, made one myself.
 - IconAwesome
 - jQuery
 - Moment (+npm)
-- daterangepicker
+- daterangepicker ( https://github.com/dangrossman/bootstrap-daterangepicker )
 - PHPExcel (Optional)
